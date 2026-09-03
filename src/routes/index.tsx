@@ -44,6 +44,7 @@ const HIMANI_NOTES: { day: number; note: string }[] = [
   { day: 13, note: "happy 3 months i love you so much ❤️" },
   { day: 11, note: "i love you your the most perfect gf ever" },
   { day: 10, note: "https://bit.ly/4h8ef3y" },
+  { day: 9, note: "i love you baby i thinking of you 24/7" },
 ];
 /* ------------------------------------------------------------------ */
 
