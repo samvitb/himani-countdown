@@ -43,7 +43,7 @@ const IST = "Asia/Kolkata";
 const HIMANI_NOTES: { day: number; note: string }[] = [
   { day: 13, note: "happy 3 months i love you so much ❤️" },
   { day: 11, note: "i love you your the most perfect gf ever" },
-  { day: 10, note: "i love infinity billion trillion infinity times ☹️ i pinky promise i'll be better" },
+  { day: 10, note: "https://docs.google.com/document/d/1dAv2Yh-qNJy9qH0lvw0r2LtelpC93I_bm0Sb6Mfy-jk/edit?usp=sharing" },
 ];
 /* ------------------------------------------------------------------ */
 
