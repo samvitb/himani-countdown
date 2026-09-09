@@ -49,7 +49,7 @@ const HIMANI_NOTES: { day: number; note: string }[] = [
   { day: 7, note: "i love you more than any words can describe i so excited to see you" },
   { day: 6, note: "i feel sooo grateful and lucky to have you I love you infinity" },
   { day: 5, note: "i love and miss you ✋...............♾️.....................✋ thiss much" },
-  { day: 4, note: "i love you so much no matter what 🦛💋 i hope you feel infinityy times better baby" },
+  { day: 4, note: "i love you endlessly no matter what 🦛💋 i hope you feel infinityy times better baby" },
 ];
 /* ------------------------------------------------------------------ */
 
