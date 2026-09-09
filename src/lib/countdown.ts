@@ -1,12 +1,11 @@
 /**
  * Timezone-aware countdown helpers.
  *
- * The target is the *start* of September 13, 2026 in a given IANA timezone.
- * We resolve that wall-clock time to a real UTC instant by measuring the
+ * The target is a wall-clock date/time in a given IANA timezone — so each
+ * person counts down to *their own* local midnight, not a shared instant.
+ * We resolve that wall-clock time to a real UTC timestamp by measuring the
  * zone's UTC offset (which handles DST automatically) and correcting for it.
  */
-
-const TARGET = { year: 2026, month: 9, day: 13, hour: 0, minute: 0, second: 0 };
 
 function offsetMs(timeZone: string, date: Date): number {
   const dtf = new Intl.DateTimeFormat("en-US", {
@@ -32,20 +31,34 @@ function offsetMs(timeZone: string, date: Date): number {
   return asUTC - date.getTime();
 }
 
-/** UTC timestamp (ms) of midnight Sept 13, 2026 in the given timezone. */
-export function targetInstant(timeZone: string): number {
-  const naive = Date.UTC(
-    TARGET.year,
-    TARGET.month - 1,
-    TARGET.day,
-    TARGET.hour,
-    TARGET.minute,
-    TARGET.second,
-  );
+/**
+ * UTC timestamp (ms) of the moment the clock in `timeZone` reads `date` at `time`.
+ *
+ * @param timeZone IANA zone, e.g. "America/Los_Angeles"
+ * @param date     "YYYY-MM-DD"
+ * @param time     "HH:MM" or "HH:MM:SS", 24-hour. Defaults to midnight.
+ */
+export function targetInstant(timeZone: string, date: string, time = "00:00"): number {
+  const [year, month, day] = date.split("-").map(Number);
+  const [hour = 0, minute = 0, second = 0] = time.split(":").map(Number);
+
+  if (!year || !month || !day) {
+    throw new Error(`targetInstant: bad date "${date}" — expected YYYY-MM-DD`);
+  }
+
+  const naive = Date.UTC(year, month - 1, day, hour, minute, second);
   // Two passes so a DST boundary near the target resolves correctly.
   let guess = naive - offsetMs(timeZone, new Date(naive));
   guess = naive - offsetMs(timeZone, new Date(guess));
   return guess;
+}
+
+/** "Pacific Daylight Time", "India Standard Time", … derived from the zone. */
+export function zoneLabel(timeZone: string, now: Date = new Date()): string {
+  const part = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "long" })
+    .formatToParts(now)
+    .find((p) => p.type === "timeZoneName");
+  return part?.value ?? timeZone.replace(/_/g, " ");
 }
 
 export type Remaining = {
@@ -70,7 +83,6 @@ export function remainingUntil(target: number, now: number): Remaining {
     done: total <= 0,
   };
 }
-
 
 export function moodFor(r: Remaining): string {
   if (r.done) return "❤️";
