@@ -39,14 +39,14 @@ type Person = {
 const PEOPLE: Person[] = [
   {
     name: "Samvit",
-    place: "California",
+    place: "San Ramon",
     timeZone: "America/Los_Angeles",
     animal: "🦒",
   },
   {
     name: "Himani",
-    place: "Dubai",
-    timeZone: "Asia/Dubai",
+    place: "India",
+    timeZone: "Asia/Kolkata",
     animal: "🦛",
     featured: true,
     notes: [
