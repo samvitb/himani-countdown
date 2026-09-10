@@ -15,9 +15,9 @@ export function GratitudePdf({ url, title }: { url: string; title: string }) {
         className="gratitude-mini"
       >
         <span aria-hidden="true" className="text-base leading-none">
-          💌
+          🍀
         </span>
-        <span className="post-it-tap">why</span>
+        <span className="post-it-tap">lucky</span>
       </button>
 
       {open && (
