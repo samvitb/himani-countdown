@@ -45,8 +45,8 @@ const PEOPLE: Person[] = [
   },
   {
     name: "Himani",
-    place: "India",
-    timeZone: "Asia/Kolkata",
+    place: "Dubai",
+    timeZone: "Asia/Dubai",
     animal: "🦛",
     featured: true,
     notes: [
