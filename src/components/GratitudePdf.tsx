@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export function GratitudePdf({ url, title }: { url: string; title: string }) {
   const [open, setOpen] = useState(false);
-  const isMobile = useIsMobile();
 
   return (
     <>
@@ -42,16 +40,8 @@ export function GratitudePdf({ url, title }: { url: string; title: string }) {
 
             <p className="paper-modal-title">{title}</p>
 
-            {isMobile ? (
-              <p className="text-center text-sm opacity-80">
-                open it full screen so you can read it properly ❤️
-              </p>
-            ) : (
-              <iframe src={url} title={title} className="pdf-frame" />
-            )}
-
             <a href={url} target="_blank" rel="noreferrer" className="pdf-open-link">
-              {isMobile ? "open it ♥" : "open full screen ♥"}
+              read it ♥
             </a>
           </div>
         </div>
