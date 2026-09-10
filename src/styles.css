@@ -414,27 +414,18 @@
   z-index: 70;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  width: min(46rem, 100%);
-  max-height: 86vh;
-  padding: 1.5rem 1.25rem 1.25rem;
+  align-items: center;
+  gap: 1.5rem;
+  width: min(20rem, 100%);
+  padding: 2.25rem 1.75rem 1.75rem;
   border-radius: var(--radius-2xl);
   background-color: var(--accent);
   color: var(--accent-foreground);
   box-shadow: 0 28px 70px -28px oklch(0.4 0.05 8 / 0.4);
-  animation: paper-pop-in 0.25s ease both;
+  transform: rotate(-2deg);
+  animation: pop-in 0.25s ease both;
 }
 
-@keyframes paper-pop-in {
-  from {
-    opacity: 0;
-    transform: scale(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 
 @utility paper-modal-title {
   font-family: var(--font-display);
@@ -445,14 +436,6 @@
   padding-left: 2rem;
 }
 
-@utility pdf-frame {
-  flex: 1;
-  min-height: 55vh;
-  width: 100%;
-  border: 0;
-  border-radius: var(--radius-lg);
-  background-color: oklch(0.99 0.005 20);
-}
 
 @utility pdf-open-link {
   display: inline-flex;
