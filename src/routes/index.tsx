@@ -9,6 +9,7 @@ import {
   type Remaining,
 } from "@/lib/countdown";
 import { Confetti } from "@/components/Confetti";
+import { GratitudePdf } from "@/components/GratitudePdf";
 
 /* ================================================================== *
  * ✏️  EDIT ME — everything you'd want to change lives in this block.
@@ -28,12 +29,14 @@ type Note = { day: number; note: string };
 type Person = {
   name: string;
   place: string;
-  /** IANA timezone, e.g. "America/Los_Angeles", "Asia/Kolkata", "Europe/London" */
+  /** IANA timezone, e.g. "America/Los_Angeles", "Asia/Dubai", "Europe/London" */
   timeZone: string;
   animal: string;
   featured?: boolean;
   /** Pink heart note that appears when this person's card shows `day` days. */
   notes?: Note[];
+  /** PDF behind the 💌 button. Put the file in public/ and use a leading slash. */
+  gratitude?: { pdf: string; title: string };
 };
 
 const PEOPLE: Person[] = [
@@ -49,6 +52,10 @@ const PEOPLE: Person[] = [
     timeZone: "Asia/Dubai",
     animal: "🦛",
     featured: true,
+    gratitude: {
+      pdf: "/reasons.pdf",
+      title: "why i'm so lucky to have you",
+    },
     notes: [
       { day: 13, note: "happy 3 months i love you so much ❤️" },
       { day: 11, note: "i love you your the most perfect gf ever" },
@@ -309,6 +316,9 @@ function Index() {
                 featured={person.featured}
               />
               {note && <PostIt note={note} />}
+              {person.gratitude && (
+                <GratitudePdf url={person.gratitude.pdf} title={person.gratitude.title} />
+              )}
             </div>
           ))}
         </div>
