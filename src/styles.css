@@ -369,4 +369,105 @@
     transform: translateY(-110vh) scale(1.1);
     opacity: 0;
   }
+  /* ---- gratitude button (mirrors post-it-mini on the left corner) ---- */
+
+@utility gratitude-mini {
+  position: absolute;
+  top: -0.6rem;
+  left: 0.75rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(160deg, oklch(0.86 0.11 355), oklch(0.78 0.14 3));
+  color: oklch(0.99 0.005 20);
+  box-shadow: 0 6px 16px -5px oklch(0.6 0.15 5 / 0.5);
+  transform: rotate(-8deg);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: gratitude-nudge 1.8s ease-in-out infinite;
+  &:hover {
+    animation: none;
+    transform: rotate(0deg) scale(1.15);
+    box-shadow: 0 8px 20px -5px oklch(0.6 0.15 5 / 0.55);
+  }
+}
+
+@keyframes gratitude-nudge {
+  0%, 100% {
+    transform: rotate(-8deg) scale(1);
+  }
+  50% {
+    transform: rotate(-8deg) scale(1.1);
+  }
+}
+
+@utility paper-modal {
+  position: relative;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: min(46rem, 100%);
+  max-height: 86vh;
+  padding: 1.5rem 1.25rem 1.25rem;
+  border-radius: var(--radius-2xl);
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  box-shadow: 0 28px 70px -28px oklch(0.4 0.05 8 / 0.4);
+  animation: paper-pop-in 0.25s ease both;
+}
+
+@keyframes paper-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@utility paper-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.3;
+  text-align: center;
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+@utility pdf-frame {
+  flex: 1;
+  min-height: 55vh;
+  width: 100%;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background-color: oklch(0.99 0.005 20);
+}
+
+@utility pdf-open-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  align-self: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(160deg, oklch(0.86 0.11 355), oklch(0.78 0.14 3));
+  color: oklch(0.99 0.005 20);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  box-shadow: 0 6px 16px -5px oklch(0.6 0.15 5 / 0.5);
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.04);
+  }
+}
 }
