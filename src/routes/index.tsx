@@ -21,7 +21,7 @@ const COUNTDOWN_DATE = "2026-09-13";
 /** Time of day, 24h. Each person hits it at this time in their OWN zone. */
 const COUNTDOWN_TIME = "00:00";
 
-const TITLE = "🦒❤️🦛 countdown";
+const TITLE = "🦒❤️🦛";
 const FOOTER = "i meeess you.";
 
 type Note = { day: number; note: string };
