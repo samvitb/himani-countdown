@@ -2,13 +2,14 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { Confetti } from "@/components/Confetti";
 
 /* ------------------------------------------------------------------ *
- * ✏️  EDIT ME — the pairs, and what she sees when she wins.
+ * ✏️  EDIT ME — the pairs, the button, and what she sees when she wins.
  * ------------------------------------------------------------------ */
 const EMOJIS = ["🦒", "❤️", "🦛", "🍀", "😡", "💋", "😈", "☹️"];
 
-const HEADING = "a silly little game";
+const BUTTON_LABEL = "play a silly game ♥";
+const HEADING = "match the pairs";
 const WIN_TITLE = "you found them all ♥";
-const WIN_NOTE = "i knew you could do it";
+const WIN_NOTE = "good job baby";
 /* ------------------------------------------------------------------ */
 
 const BEST_KEY = "himani-memory-best";
@@ -29,8 +30,9 @@ function buildDeck(): Card[] {
 }
 
 export function MemoryMatch() {
-  // Built in an effect, never during render: Math.random() on the server
-  // would disagree with the client and break hydration.
+  const [open, setOpen] = useState(false);
+  // Built on open, never during render: Math.random() on the server would
+  // disagree with the browser and break hydration.
   const [deck, setDeck] = useState<Card[] | null>(null);
   const [round, setRound] = useState(0);
   const [flipped, setFlipped] = useState<string[]>([]);
@@ -41,7 +43,6 @@ export function MemoryMatch() {
   const [best, setBest] = useState<number | null>(null);
 
   useEffect(() => {
-    setDeck(buildDeck());
     try {
       const stored = window.localStorage.getItem(BEST_KEY);
       if (stored) setBest(Number(stored));
@@ -65,7 +66,22 @@ export function MemoryMatch() {
     });
   }, [won, moves]);
 
-  function reset() {
+  // Escape closes, and the page behind shouldn't scroll while we're open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
+  function newGame() {
     setDeck(buildDeck());
     setRound((r) => r + 1);
     setFlipped([]);
@@ -73,6 +89,11 @@ export function MemoryMatch() {
     setWrong(false);
     setLock(false);
     setMoves(0);
+  }
+
+  function launch() {
+    newGame();
+    setOpen(true);
   }
 
   function handleFlip(card: Card) {
@@ -107,63 +128,93 @@ export function MemoryMatch() {
   }
 
   return (
-    <section className="mm-wrap">
-      {won && <Confetti />}
+    <div className="mm-launch-wrap">
+      <button type="button" className="mm-button mm-launch" onClick={launch}>
+        {BUTTON_LABEL}
+      </button>
 
-      <h2 className="mm-title">{HEADING}</h2>
-
-      <div className="mm-meta">
-        <span>{moves} moves</span>
-        {best !== null && <span>best {best}</span>}
-      </div>
-
-      <div className="mm-grid" role="group" aria-label="Emoji memory game">
-        {deck?.map((card, i) => {
-          const isMatched = matched.includes(card.key);
-          const isUp = isMatched || flipped.includes(card.key);
-          const shake = wrong && flipped.includes(card.key);
-
-          return (
-            <button
-              key={`${round}-${card.key}`}
-              type="button"
-              className={`mm-cell${shake ? " is-wrong" : ""}`}
-              style={{ "--mm-delay": `${i * 35}ms` } as CSSProperties}
-              onClick={() => handleFlip(card)}
-              aria-label={isUp ? card.emoji : "face down card"}
+      {open && (
+        <>
+          {won && <Confetti />}
+          <div
+            className="fixed inset-0 z-40 flex items-center justify-center bg-foreground/15 p-4 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          >
+            <div
+              className="mm-modal"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-label="Emoji memory game"
             >
-              <div
-                className={`mm-inner${isUp ? " is-up" : ""}${
-                  isMatched ? " is-matched" : ""
-                }`}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close game"
+                className="post-it-close"
               >
-                <span className="mm-face mm-back" aria-hidden="true">
-                  ♥
-                </span>
-                <span className="mm-face mm-front" aria-hidden="true">
-                  {card.emoji}
-                </span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+                ×
+              </button>
 
-      {won ? (
-        <div className="mm-win">
-          <p className="mm-win-title">{WIN_TITLE}</p>
-          <p className="mm-win-note">
-            {WIN_NOTE} — {moves} moves
-          </p>
-          <button type="button" className="mm-button" onClick={reset}>
-            play again ♥
-          </button>
-        </div>
-      ) : (
-        <button type="button" className="mm-button mm-button-quiet" onClick={reset}>
-          shuffle
-        </button>
+              <h2 className="mm-title">{HEADING}</h2>
+
+              <div className="mm-meta">
+                <span>{moves} moves</span>
+                {best !== null && <span>best {best}</span>}
+              </div>
+
+              <div className="mm-grid" role="group" aria-label="Cards">
+                {deck?.map((card, i) => {
+                  const isMatched = matched.includes(card.key);
+                  const isUp = isMatched || flipped.includes(card.key);
+                  const shake = wrong && flipped.includes(card.key);
+
+                  return (
+                    <button
+                      key={`${round}-${card.key}`}
+                      type="button"
+                      className={`mm-cell${shake ? " is-wrong" : ""}`}
+                      style={{ "--mm-delay": `${i * 35}ms` } as CSSProperties}
+                      onClick={() => handleFlip(card)}
+                      aria-label={isUp ? card.emoji : "face down card"}
+                    >
+                      <div
+                        className={`mm-inner${isUp ? " is-up" : ""}${
+                          isMatched ? " is-matched" : ""
+                        }`}
+                      >
+                        <span className="mm-face mm-back" aria-hidden="true">
+                          ♥
+                        </span>
+                        <span className="mm-face mm-front" aria-hidden="true">
+                          {card.emoji}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {won ? (
+                <div className="mm-win">
+                  <p className="mm-win-title">{WIN_TITLE}</p>
+                  <p className="mm-win-note">{WIN_NOTE}</p>
+                  <button type="button" className="mm-button" onClick={newGame}>
+                    play again ♥
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="mm-button mm-button-quiet"
+                  onClick={newGame}
+                >
+                  shuffle
+                </button>
+              )}
+            </div>
+          </div>
+        </>
       )}
-    </section>
+    </div>
   );
 }
