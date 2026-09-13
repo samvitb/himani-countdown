@@ -454,4 +454,203 @@
   &:hover {
     transform: scale(1.04);
   }
+
+/* ---- memory match game ------------------------------------------- */
+
+.mm-wrap {
+  margin-top: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
 }
+
+.mm-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+}
+
+.mm-meta {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.mm-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+  width: min(21rem, 100%);
+  margin-top: 0.25rem;
+}
+
+.mm-cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  perspective: 900px;
+  cursor: pointer;
+  animation: mm-deal 0.5s var(--mm-delay, 0ms) cubic-bezier(0.2, 0.8, 0.3, 1.05) both;
+}
+
+.mm-cell.is-wrong {
+  animation: mm-shake 0.45s ease;
+}
+
+.mm-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1.12);
+}
+
+.mm-inner.is-up {
+  transform: rotateY(180deg);
+}
+
+.mm-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.mm-back {
+  background: linear-gradient(160deg, oklch(0.86 0.11 355), oklch(0.78 0.14 3));
+  color: oklch(0.99 0.005 20 / 0.85);
+  font-size: 1.2rem;
+  box-shadow: 0 8px 18px -9px oklch(0.6 0.15 5 / 0.6);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.mm-cell:hover .mm-inner:not(.is-up) .mm-back {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 24px -9px oklch(0.6 0.15 5 / 0.75);
+}
+
+.mm-front {
+  transform: rotateY(180deg);
+  background: linear-gradient(170deg, oklch(0.995 0.006 20), oklch(0.955 0.032 10));
+  border: 1px solid oklch(0.9 0.045 8);
+  font-size: 1.65rem;
+  line-height: 1;
+  box-shadow: 0 8px 18px -11px oklch(0.6 0.15 5 / 0.45);
+}
+
+.mm-inner.is-matched .mm-front {
+  animation: mm-pop 0.55s ease;
+  border-color: oklch(0.8 0.1 5);
+  box-shadow:
+    0 0 0 2px oklch(0.84 0.09 5 / 0.55),
+    0 10px 22px -10px oklch(0.6 0.15 5 / 0.5);
+}
+
+.mm-win {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  animation: mm-rise 0.45s ease both;
+}
+
+.mm-win-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.mm-win-note {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.mm-button {
+  margin-top: 0.4rem;
+  padding: 0.6rem 1.4rem;
+  border: 0;
+  border-radius: 9999px;
+  background: linear-gradient(160deg, oklch(0.86 0.11 355), oklch(0.78 0.14 3));
+  color: oklch(0.99 0.005 20);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px -6px oklch(0.6 0.15 5 / 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mm-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 9px 20px -6px oklch(0.6 0.15 5 / 0.6);
+}
+
+.mm-button-quiet {
+  background: transparent;
+  color: var(--muted-foreground);
+  box-shadow: none;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+}
+
+.mm-button-quiet:hover {
+  color: var(--primary);
+  transform: none;
+  box-shadow: none;
+}
+
+@keyframes mm-deal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mm-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+@keyframes mm-pop {
+  0% { transform: rotateY(180deg) scale(1); }
+  45% { transform: rotateY(180deg) scale(1.15); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+@keyframes mm-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-cell,
+  .mm-inner,
+  .mm-inner.is-matched .mm-front,
+  .mm-win {
+    animation: none;
+    transition: none;
+  }
+}
+
