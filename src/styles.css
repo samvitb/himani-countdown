@@ -426,7 +426,6 @@
   animation: pop-in 0.25s ease both;
 }
 
-
 @utility paper-modal-title {
   font-family: var(--font-display);
   font-size: 1.15rem;
@@ -435,7 +434,6 @@
   padding-right: 2rem;
   padding-left: 2rem;
 }
-
 
 @utility pdf-open-link {
   display: inline-flex;
@@ -454,6 +452,7 @@
   &:hover {
     transform: scale(1.04);
   }
+}
 
 /* ---- memory match game ------------------------------------------- */
 
@@ -653,4 +652,3 @@
     transition: none;
   }
 }
-
