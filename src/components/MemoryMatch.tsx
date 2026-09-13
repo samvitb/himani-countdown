@@ -6,7 +6,7 @@ import { Confetti } from "@/components/Confetti";
  * ------------------------------------------------------------------ */
 const EMOJIS = ["🦒", "❤️", "🦛", "🍀", "😡", "💋", "😈", "☹️"];
 
-const BUTTON_LABEL = "play a silly game ♥";
+const BUTTON_LABEL = "matching game ♥";
 const HEADING = "match the pairs";
 const WIN_TITLE = "you found them all ♥";
 const WIN_NOTE = "good job baby";
