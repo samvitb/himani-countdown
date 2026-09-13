@@ -10,6 +10,7 @@ import {
 } from "@/lib/countdown";
 import { Confetti } from "@/components/Confetti";
 import { GratitudePdf } from "@/components/GratitudePdf";
+import { MemoryMatch } from "@/components/MemoryMatch";
 
 /* ================================================================== *
  * ✏️  EDIT ME — everything you'd want to change lives in this block.
@@ -324,6 +325,8 @@ function Index() {
             </div>
           ))}
         </div>
+
+        <MemoryMatch />
 
         <p className="mt-12 text-center text-[0.7rem] tracking-[0.24em] uppercase text-muted-foreground/70">
           {FOOTER}
