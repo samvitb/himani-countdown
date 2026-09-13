@@ -19,7 +19,7 @@ import { GratitudePdf } from "@/components/GratitudePdf";
 const COUNTDOWN_DATE = "2026-09-13";
 
 /** Time of day, 24h. Each person hits it at this time in their OWN zone. */
-const COUNTDOWN_TIME = "23:59";
+const COUNTDOWN_TIME = "14:00";
 
 const TITLE = "🦒❤️🦛";
 const FOOTER = "i meeess you.";
@@ -48,8 +48,8 @@ const PEOPLE: Person[] = [
   },
   {
     name: "Himani",
-    place: "Dubai",
-    timeZone: "Asia/Dubai",
+    place: "Pleasanton",
+    timeZone: "America/Los_Angeles",
     animal: "🦛",
     featured: true,
     gratitude: {
