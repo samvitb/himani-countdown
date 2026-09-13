@@ -30,7 +30,7 @@ type Note = { day: number; note: string };
 type Person = {
   name: string;
   place: string;
-  /** IANA timezone, e.g. "America/Los_Angeles", "Asia/Dubai", "Europe/London" */
+  /** IANA timezone, e.g. "America/Los_Angeles", "Asia", "Europe/London" */
   timeZone: string;
   animal: string;
   featured?: boolean;
