@@ -49,7 +49,7 @@ const PEOPLE: Person[] = [
   },
   {
     name: "Himani",
-    place: "Pleasanton",
+    place: "Riverside",
     timeZone: "America/Los_Angeles",
     animal: "🦛",
     featured: true,
