@@ -20,7 +20,7 @@ import { MemoryMatch } from "@/components/MemoryMatch";
 const COUNTDOWN_DATE = "2026-11-06";
 
 /** Time of day, 24h. Each person hits it at this time in their OWN zone. */
-const COUNTDOWN_TIME = "23:00";
+const COUNTDOWN_TIME = "00:00";
 
 const TITLE = "🦒❤️🦛";
 const FOOTER = "i meeess you.";
