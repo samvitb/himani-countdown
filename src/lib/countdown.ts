@@ -31,6 +31,11 @@ function offsetMs(timeZone: string, date: Date): number {
   return asUTC - date.getTime();
 }
 
+/** The instant's local wall-clock reading, expressed as a UTC timestamp. */
+function wallClockMs(timeZone: string, ms: number): number {
+  return ms + offsetMs(timeZone, new Date(ms));
+}
+
 /**
  * UTC timestamp (ms) of the moment the clock in `timeZone` reads `date` at `time`.
  *
@@ -70,9 +75,23 @@ export type Remaining = {
   done: boolean;
 };
 
-export function remainingUntil(target: number, now: number): Remaining {
+/**
+ * Break the gap down for display.
+ *
+ * Pass `timeZone` and the split is measured on that zone's wall clock rather
+ * than in raw elapsed milliseconds. That matters across a DST boundary: the
+ * day the clocks go back is 25 real hours long, so a raw division would leave
+ * a surplus hour and the day counter would tick over at 1 AM instead of
+ * midnight. `total` and `done` stay in real time either way.
+ */
+export function remainingUntil(target: number, now: number, timeZone?: string): Remaining {
   const total = Math.max(0, target - now);
-  const totalSeconds = Math.floor(total / 1000);
+
+  const span = timeZone
+    ? Math.max(0, wallClockMs(timeZone, target) - wallClockMs(timeZone, now))
+    : total;
+
+  const totalSeconds = Math.floor(span / 1000);
   return {
     total,
     // Counts the day in progress, so "23d 23h left" reads as 24 days to go.
