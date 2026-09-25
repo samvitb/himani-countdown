@@ -30,7 +30,7 @@ type Note = { day: number; note: string };
 type Person = {
   name: string;
   place: string;
-  /** IANA timezone, e.g. "America/Los_Angeles", "Asia", "Europe/London" */
+  /** IANA timezone, e.g. "America/Los_Angeles", "Asia/Dubai", "Europe/London" */
   timeZone: string;
   animal: string;
   featured?: boolean;
@@ -269,7 +269,7 @@ function Index() {
   const ready = now !== null;
 
   const cards = PEOPLE.map((person, i) => {
-    const remaining = remainingUntil(targets[i], tick);
+    const remaining = remainingUntil(targets[i], tick, person.timeZone);
     const note =
       ready && !remaining.done
         ? person.notes?.find((n) => n.day === remaining.days)?.note
