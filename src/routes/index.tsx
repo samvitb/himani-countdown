@@ -58,8 +58,8 @@ const PEOPLE: Person[] = [
       title: "why i'm so lucky to have you",
     },
     notes: [
-      { day: 43, note: "i miss you" },
-      { day: 42, note: "i miss you" },
+      { day: 41, note: "i no know if you even check these anymore but I miss you and I love you" },
+      { day: 40, note: "i no know if you even check these anymore but I miss you and I love you" },
     ],
   },
 ];
