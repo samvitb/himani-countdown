@@ -24,9 +24,9 @@ type Page = {
 const PAGES: Page[] = [
   {
     cover: true,
-    kicker: "for himani · from samvit",
-    title: "four months",
-    line: "tap to turn the page →",
+    kicker: "to himani · from samvit",
+    title: "four months ❤️",
+    line: "swipe to turn the page →",
   },
   {
     kicker: "september 30, 2026",
@@ -49,7 +49,7 @@ const PAGES: Page[] = [
     body: "this was one of more difficult months and I so sorry for that baby :( i know we fighted alot but please please just bear with me baby, i know i can be difficult and cranky and you don't like me as much now cause I being like this but its just cause i miss you so much so please bear with me :( even if it was difficult, i am so so so proud of us for making it and it normal for couple to fight at this point for bit, but it gonna get soooo much better now that we made it through this patch and it was just cause i missed you so much and it's really difficult being away from you. the fact we made it through this time make me so hopeful and excited for our future togetherr !! i know you the one i wanna spend the rest of my life with and nothing is putting us apart ever. please always remember how much I love you, I love you infinity and nothing could ever change that. i love you more and more and more every single day. no fights till 2028 atleast now 😡😡 I love you baby and thank you so much for everything you are to me you truly mean the world to me you my everything mwwwwwaah. I so excited to see you whenever you come home to me next :( and i know you having a super amazing time at college but just please don't forget about me and come home to me soon i really miss you :(",
   },
   {
-    kicker: "one last thing",
+    kicker: "oneee last thing",
     body: "happy 4 months again baby mwah mwah. i gonna take chance to celebrate every anniversary even if it as tiny as doing something like this. i know 4 months is gonna mean nothing in the long run because we gonna spend the next 100 years together anyway, but I love you so much and i need you to know that. you are my entire universe and id always always do anything for you. i love you baby thank you for being the best girlfriend in the whole wide universe :)",
     signoff: "— samvit 🦒",
   },
