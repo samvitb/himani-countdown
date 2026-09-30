@@ -11,6 +11,7 @@ import {
 import { Confetti } from "@/components/Confetti";
 import { GratitudePdf } from "@/components/GratitudePdf";
 import { MemoryMatch } from "@/components/MemoryMatch";
+import { FourChapters } from "@/components/FourChapters";
 
 /* ================================================================== *
  * ✏️  EDIT ME — everything you'd want to change lives in this block.
@@ -281,6 +282,7 @@ function Index() {
   });
 
   const celebrate = ready && cards.some((c) => c.remaining.done);
+  const featuredDays = (cards.find((c) => c.person.featured) ?? cards[0]).remaining.days;
 
   return (
     <main className="page-bg min-h-screen px-5 py-14 sm:py-20">
@@ -317,6 +319,8 @@ function Index() {
             </div>
           ))}
         </div>
+
+                {ready && <FourChapters day={featuredDays} />}
 
         <MemoryMatch />
 
