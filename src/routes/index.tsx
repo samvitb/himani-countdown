@@ -18,7 +18,7 @@ import { FourChapters } from "@/components/FourChapters";
  * ================================================================== */
 
 /** The day you're counting down to. Format: YYYY-MM-DD */
-const COUNTDOWN_DATE = "2026-11-06";
+const COUNTDOWN_DATE = "2026-10-14";
 
 /** Time of day, 24h. Each person hits it at this time in their OWN zone. */
 const COUNTDOWN_TIME = "00:00";
