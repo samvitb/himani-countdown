@@ -60,7 +60,7 @@ const PEOPLE: Person[] = [
     },
     notes: [
       { day: 41, note: "i no know if you even check these anymore but I miss you and I love you" },
-      { day: 40, note: "i no know if you even check these anymore but I miss you and I love you" },
+      { day: 7, note: "i lees yoouiuu" },
     ],
   },
 ];
