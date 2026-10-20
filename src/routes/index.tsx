@@ -18,7 +18,7 @@ import { FourChapters } from "@/components/FourChapters";
  * ================================================================== */
 
 /** The day you're counting down to. Format: YYYY-MM-DD */
-const COUNTDOWN_DATE = "2026-10-14";
+const COUNTDOWN_DATE = "2026-11-06";
 
 /** Time of day, 24h. Each person hits it at this time in their OWN zone. */
 const COUNTDOWN_TIME = "00:00";
@@ -59,8 +59,8 @@ const PEOPLE: Person[] = [
       title: "why i'm so lucky to have you",
     },
     notes: [
-      { day: 41, note: "i no know if you even check these anymore but I miss you and I love you" },
-      { day: 7, note: "i lees yoouiuu" },
+      { day: 18, note: "i missing you so muchh" },
+      { day: 17, note: "i lees yoouiuu" },
     ],
   },
 ];
