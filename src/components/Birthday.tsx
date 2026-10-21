@@ -16,7 +16,7 @@ const SHOW_ON_DAY = 16;
  * ⚠️  SET THIS TO false BEFORE HER BIRTHDAY, or it will play on every
  *     single visit forever instead of being a surprise on the day.
  */
-const FORCE_SHOW = true;
+const FORCE_SHOW = false;
 
 /** How old she's turning. Shown as the big numeral candles on the cake. */
 const AGE = "18";
@@ -462,6 +462,7 @@ export function Birthday({ day }: { day: number }) {
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<Stage>("curtain");
   const timers = useRef<number[]>([]);
+  const autoRan = useRef(false);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach((t) => window.clearTimeout(t));
@@ -475,21 +476,32 @@ export function Birthday({ day }: { day: number }) {
     timers.current.push(window.setTimeout(() => setStage("cake"), 2600));
   }, [clearTimers]);
 
-  /* Auto-play: every load while testing, once per device on the real day. */
+  /* Auto-play: every load while testing, once per device on the real day.
+     Opens synchronously and marks "seen" only after it has actually opened —
+     an earlier version scheduled the open on a timer and wrote the flag first,
+     so if the effect re-ran inside that window the cleanup killed the timer
+     and the one showing was silently spent without ever playing. */
   useEffect(() => {
-    if (!active) return;
+    if (!active || autoRan.current) return;
+    autoRan.current = true;
 
     if (!FORCE_SHOW) {
       try {
         if (window.localStorage.getItem(SEEN_KEY)) return;
-        window.localStorage.setItem(SEEN_KEY, "1");
       } catch {
         /* private browsing — just play it */
       }
     }
 
-    const t = window.setTimeout(start, 400);
-    return () => window.clearTimeout(t);
+    start();
+
+    if (!FORCE_SHOW) {
+      try {
+        window.localStorage.setItem(SEEN_KEY, "1");
+      } catch {
+        /* ignore */
+      }
+    }
   }, [active, start]);
 
   useEffect(() => clearTimers, [clearTimers]);
