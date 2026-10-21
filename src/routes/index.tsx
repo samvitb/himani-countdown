@@ -12,6 +12,7 @@ import { Confetti } from "@/components/Confetti";
 import { GratitudePdf } from "@/components/GratitudePdf";
 import { MemoryMatch } from "@/components/MemoryMatch";
 import { FourChapters } from "@/components/FourChapters";
+import { Birthday } from "@/components/Birthday";
 
 /* ================================================================== *
  * ✏️  EDIT ME — everything you'd want to change lives in this block.
@@ -285,6 +286,7 @@ function Index() {
   return (
     <main className="page-bg min-h-screen px-5 py-14 sm:py-20">
       {celebrate && <Confetti />}
+      {ready && <Birthday day={featuredDays} />}
       <div className="mx-auto w-full max-w-3xl">
         <header className="text-center">
           <h1 className="font-display text-4xl tracking-tight text-foreground sm:text-5xl">
