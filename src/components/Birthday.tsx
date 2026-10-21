@@ -160,13 +160,110 @@ function Sparkles({ count = 26 }: { count?: number }) {
 
 /* ------------------------------------------------------------------ */
 
-/** Happy Birthday, as [frequency, beats] pairs. */
-const MELODY: [number, number][] = [
-  [392.0, 0.5], [392.0, 0.25], [440.0, 0.75], [392.0, 0.75], [523.25, 0.75], [493.88, 1.5],
-  [392.0, 0.5], [392.0, 0.25], [440.0, 0.75], [392.0, 0.75], [587.33, 0.75], [523.25, 1.5],
-  [392.0, 0.5], [392.0, 0.25], [783.99, 0.75], [659.25, 0.75], [523.25, 0.75], [493.88, 0.75], [440.0, 1.5],
-  [698.46, 0.5], [698.46, 0.25], [659.25, 0.75], [523.25, 0.75], [587.33, 0.75], [523.25, 1.75],
+/* Happy Birthday in C, properly in 3/4 with its pickup beat.
+   [frequency, beats] — a beat is a quarter note. */
+const MELODY: readonly (readonly [number, number])[] = [
+  [392.0, 0.5], [392.0, 0.5],
+  [440.0, 1], [392.0, 1], [523.25, 1],
+  [493.88, 2], [392.0, 0.5], [392.0, 0.5],
+  [440.0, 1], [392.0, 1], [587.33, 1],
+  [523.25, 2], [392.0, 0.5], [392.0, 0.5],
+  [783.99, 1], [659.25, 1], [523.25, 1],
+  [493.88, 1], [440.0, 1], [698.46, 0.5], [698.46, 0.5],
+  [659.25, 1], [523.25, 1], [587.33, 1],
+  [523.25, 3],
 ];
+
+/* One warm chord under each bar: [beat it starts on, its notes]. */
+const CHORDS: readonly (readonly [number, readonly number[]])[] = [
+  [1, [130.81, 164.81, 196.0]],
+  [4, [98.0, 123.47, 174.61]],
+  [7, [98.0, 123.47, 174.61]],
+  [10, [130.81, 164.81, 196.0]],
+  [13, [130.81, 164.81, 196.0]],
+  [16, [87.31, 110.0, 130.81]],
+  [19, [98.0, 123.47, 174.61]],
+  [22, [130.81, 164.81, 196.0]],
+];
+
+/** A short noise-burst impulse response, so the notes ring in a room. */
+function makeReverb(ctx: AudioContext): ConvolverNode {
+  const seconds = 2.6;
+  const len = Math.floor(ctx.sampleRate * seconds);
+  const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+    }
+  }
+  const conv = ctx.createConvolver();
+  conv.buffer = buf;
+  return conv;
+}
+
+/** A music-box note: a stack of sine partials with a long bell decay. */
+function bell(
+  ctx: AudioContext,
+  dest: AudioNode,
+  freq: number,
+  at: number,
+  dur: number,
+) {
+  const partials: readonly (readonly [number, number])[] = [
+    [1, 1],
+    [2, 0.3],
+    [3, 0.11],
+    [4.17, 0.055],
+    [5.4, 0.025],
+  ];
+
+  for (const [mult, amp] of partials) {
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    // a touch of detune keeps it from sounding machine-made
+    osc.frequency.value = freq * mult;
+    osc.detune.value = (Math.random() - 0.5) * 6;
+
+    const g = ctx.createGain();
+    const ring = dur + 1.5;
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(amp * 0.55, at + 0.012);
+    g.gain.exponentialRampToValueAtTime(amp * 0.16, at + dur * 0.5);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + ring);
+
+    osc.connect(g);
+    g.connect(dest);
+    osc.start(at);
+    osc.stop(at + ring + 0.05);
+  }
+}
+
+/** A soft held chord that swells underneath the melody. */
+function pad(
+  ctx: AudioContext,
+  dest: AudioNode,
+  freqs: readonly number[],
+  at: number,
+  dur: number,
+) {
+  for (const f of freqs) {
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = f;
+
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, at);
+    g.gain.exponentialRampToValueAtTime(0.075, at + 0.4);
+    g.gain.setValueAtTime(0.075, at + dur * 0.55);
+    g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+
+    osc.connect(g);
+    g.connect(dest);
+    osc.start(at);
+    osc.stop(at + dur + 0.1);
+  }
+}
 
 function playMelody() {
   if (!PLAY_MUSIC) return;
@@ -178,38 +275,64 @@ function playMelody() {
     if (!Ctor) return;
 
     const ctx = new Ctor();
+
     const master = ctx.createGain();
-    master.gain.value = 0.16;
+    master.gain.value = 0.5;
     master.connect(ctx.destination);
 
-    const beat = 0.42;
-    let t = ctx.currentTime + 0.1;
+    // round off the top end so the sines read as wood, not glass
+    const warmth = ctx.createBiquadFilter();
+    warmth.type = "lowpass";
+    warmth.frequency.value = 4200;
+    warmth.Q.value = 0.6;
+    warmth.connect(master);
 
+    const dry = ctx.createGain();
+    dry.gain.value = 0.82;
+    dry.connect(warmth);
+
+    const wet = ctx.createGain();
+    wet.gain.value = 0.34;
+    const reverb = makeReverb(ctx);
+    reverb.connect(warmth);
+    wet.connect(reverb);
+
+    const melodyBus = ctx.createGain();
+    melodyBus.gain.value = 0.34;
+    melodyBus.connect(dry);
+    melodyBus.connect(wet);
+
+    const padBus = ctx.createGain();
+    padBus.gain.value = 0.5;
+    padBus.connect(dry);
+    padBus.connect(wet);
+
+    const beat = 0.56;
+    const t0 = ctx.currentTime + 0.15;
+
+    let cursor = 0;
     for (const [freq, beats] of MELODY) {
-      const dur = beats * beat;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "triangle";
-      osc.frequency.value = freq;
-
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(1, t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + dur * 0.92);
-
-      osc.connect(gain);
-      gain.connect(master);
-      osc.start(t);
-      osc.stop(t + dur);
-      t += dur;
+      // a hair of human looseness in the timing
+      const swing = (Math.random() - 0.5) * 0.012;
+      bell(ctx, melodyBus, freq, t0 + cursor * beat + swing, beats * beat);
+      cursor += beats;
     }
 
-    window.setTimeout(() => {
-      try {
-        void ctx.close();
-      } catch {
-        /* ignore */
-      }
-    }, (t - ctx.currentTime + 1) * 1000);
+    for (const [atBeat, notes] of CHORDS) {
+      pad(ctx, padBus, notes, t0 + atBeat * beat, 3 * beat);
+    }
+
+    const total = cursor * beat + 3;
+    window.setTimeout(
+      () => {
+        try {
+          void ctx.close();
+        } catch {
+          /* ignore */
+        }
+      },
+      (total + 0.5) * 1000,
+    );
   } catch {
     /* audio blocked — the animation still works fine without it */
   }
@@ -239,6 +362,8 @@ function Cake({ blown, onBlow }: { blown: boolean; onBlow: () => void }) {
       </span>
 
       <span className="bd-cake-body" aria-hidden="true">
+        <span className="bd-cake-light" />
+
         <span className="bd-tier bd-tier-top">
           <span className="bd-frosting">
             {Array.from({ length: 9 }).map((_, i) => (
@@ -399,6 +524,8 @@ export function Birthday({ day }: { day: number }) {
   if (!active) return null;
 
   const blown = stage === "blown" || stage === "letter" || stage === "reading";
+  /* Dark room while the candles are still lit; the lights come up when she blows. */
+  const night = !blown;
 
   return (
     <>
@@ -411,8 +538,14 @@ export function Birthday({ day }: { day: number }) {
       )}
 
       {open && (
-        <div className="bd-overlay" role="dialog" aria-label="Birthday surprise">
-          <div className="bd-sky" aria-hidden="true" />
+        <div
+          className={`bd-overlay${night ? " is-night" : " is-day"}`}
+          role="dialog"
+          aria-label="Birthday surprise"
+        >
+          <div className="bd-sky bd-sky-night" aria-hidden="true" />
+          <div className="bd-sky bd-sky-day" aria-hidden="true" />
+          <div className="bd-glow" aria-hidden="true" />
           <Balloons />
           <Sparkles />
           {blown && <BigConfetti />}
@@ -455,7 +588,7 @@ export function Birthday({ day }: { day: number }) {
                       <span className="bd-headline-age">turning {AGE} ♥</span>
                     </>
                   ) : (
-                    <span className="bd-headline-small">make a wish, baby</span>
+                    <span className="bd-headline-small">make a wish baby</span>
                   )}
                 </h2>
 
