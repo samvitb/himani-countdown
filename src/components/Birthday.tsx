@@ -562,7 +562,6 @@ export function Birthday({ day }: { day: number }) {
           <div className="bd-stage">
             {stage === "curtain" && (
               <div className="bd-curtain">
-                <p className="bd-curtain-kicker">pssst…</p>
                 <h2 className="bd-curtain-title">
                   guess whose
                   <br />
@@ -585,7 +584,6 @@ export function Birthday({ day }: { day: number }) {
                     <>
                       <span className="bd-headline-small">happy birthday</span>
                       <span className="bd-headline-name">{HER_NAME}</span>
-                      <span className="bd-headline-age">turning {AGE} ♥</span>
                     </>
                   ) : (
                     <span className="bd-headline-small">make a wish baby</span>
