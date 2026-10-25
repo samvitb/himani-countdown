@@ -62,6 +62,9 @@ const PEOPLE: Person[] = [
     notes: [
       { day: 18, note: "i missing you so muchh i love youu" },
       { day: 12, note: "i love you so freaking much u so yummy lookinjg" },
+      { day: 11, note: "i missss you my babbyyhyhh" },
+      { day: 10, note: "i just wanna do nom nom to you u so yummiest ever" },
+      { day: 9, note: "i really hope u come back soon i miss you alott" },
     ],
   },
 ];
